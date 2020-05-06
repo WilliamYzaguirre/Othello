@@ -2,12 +2,14 @@
 #define OTHELLOBOARD_H
 #include <QGraphicsRectItem>
 #include "tilegui.h"
+#include <QObject>
 
 
 class OthelloBoard
 {
+    Q_OBJECT
 public:
-    OthelloBoard(int x, int y);
+    OthelloBoard();
     ~OthelloBoard();
 
     void setBlackMoves();
@@ -20,6 +22,11 @@ public:
     TileState getTile(int x, int y);
     void flipTile(int x, int y);
 
+    bool isValidTile(int x, int y);
+
+signals:
+    void tileFlipped(int, int);
+    void tileSet(int, int, TileState);
 
 private:
     int x;

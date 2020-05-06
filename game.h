@@ -6,6 +6,8 @@
 #include "othelloboard.h"
 #include <QObject>
 #include "guidesign.h"
+#include "gamestate.h"
+#include "gameengine.h"
 
 class Game: public QObject
 {
@@ -25,21 +27,25 @@ public:
 
     void displayMainMenu();   
 
+    void displayPiece(int col, int row);
+
+
 signals:
-    void moveMade();
+    void moveMade(int, int);
 
 public slots:
     void start();
     void updateGame();
-    void displayPiece(int col, int row); //std::pair<int, int> coordinates, std::pair<int, int> gridloc);
+    void tileClickedReceive(int, int);
 
 private:
     QString turn;
-    OthelloBoard *othello;
+    GameEngine* gameEngine;
     QGraphicsTextItem *turnDisplay;
     std::pair<int, int> boardXY;
     int turnNumber;
     GuiDesign* drawer;
+    GameState* gameState;
 };
 
 #endif // GAME_H

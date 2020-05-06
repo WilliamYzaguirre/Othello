@@ -3,7 +3,7 @@
 #include <utility>
 #include <QDebug>
 
-extern Game *game;
+
 DiskGui::DiskGui(QGraphicsItem *parent) : QGraphicsRectItem(parent)
 {
     brush.setStyle(Qt::SolidPattern);
@@ -15,11 +15,13 @@ DiskGui::~DiskGui() {
     delete this;
 }
 
+//sets color of disk
 void DiskGui::setColor(QColor color) {
     brush.setColor(color);
     setBrush(color);
 }
 
+//flips color of disk, white->black, black->white
 void DiskGui::flipColor()
 {
     if (brush.color() == Qt::white) {

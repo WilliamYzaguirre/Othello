@@ -23,6 +23,7 @@ Button::Button(QString name, QGraphicsItem *parent)
     setAcceptHoverEvents(true);
 }
 
+//when clicked, emit signal
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(event) {
@@ -30,6 +31,7 @@ void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
+//when mouse is hovering over button, change color
 void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     //change color
@@ -40,6 +42,8 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     setBrush(brush);
     }
 }
+
+//when mouse stops hovering over button, reset color
 void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     //change color
     if(event){

@@ -14,6 +14,8 @@ GuiDesign::~GuiDesign()
     //TODO: go through and delete lists
 }
 
+//Draws main scene. Background rectangle of fixed size
+//Width=1400, height=900
 void GuiDesign::drawMainScene()
 {
     gameScene = new QGraphicsScene();
@@ -30,7 +32,7 @@ void GuiDesign::drawMainScene()
 }
 
 
-
+//draws a tile for the board
 void GuiDesign::drawTile(int x, int y)
 {
     TileGui* tile = new TileGui();
@@ -40,14 +42,18 @@ void GuiDesign::drawTile(int x, int y)
     this->addToScene(tile);
 }
 
+//adds object to main scene
 void GuiDesign::addToScene(QGraphicsItem *item) {
     gameScene->addItem(item);
 }
 
+//removes object from main scene
 void GuiDesign::removeFromScene(QGraphicsItem *item) {
     gameScene->removeItem(item);
 }
 
+//draws the main menu. 2 buttons, start and quit. Start emits a signal
+//that initiallizes a new ga,e in game.cpp. End quits the application
 void GuiDesign::drawMainMenu()
 {
     //Create the title
@@ -78,6 +84,7 @@ void GuiDesign::drawMainMenu()
     listG.append(quitButton);
 }
 
+//removes main menu from scene
 void GuiDesign::removeMainMenu()
 {
     for (QGraphicsItem* items : listG) {
@@ -85,6 +92,10 @@ void GuiDesign::removeMainMenu()
     }
 }
 
+//int x: column of disk
+//int y: row of disk
+//QColor color: color of disk initially
+//Draws a disk to the given location
 void GuiDesign::drawPiece(int x, int y, QColor color)
 {
     DiskGui* disk = new DiskGui();
@@ -93,6 +104,7 @@ void GuiDesign::drawPiece(int x, int y, QColor color)
     this->addToScene(disk);
 }
 
+//Connects tiles to game.cpp so when they are clicked, the game can know
 void GuiDesign::connectTiles()
 {
     for (int x = 0; x < 8; x++) {
@@ -102,11 +114,13 @@ void GuiDesign::connectTiles()
     }
 }
 
+//Signals that a tile has been clicked at x,y
 void GuiDesign::recieveTileClick(int x, int y)
 {
     emit sendTileClick(x, y);
 }
 
+//signals that the start button has been clicked
 void GuiDesign::sendStart() {
     emit startSignal();
 }

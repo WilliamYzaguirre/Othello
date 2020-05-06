@@ -19,16 +19,21 @@ SOURCES += \
     button.cpp \
     diskgui.cpp \
     game.cpp \
+    gameengine.cpp \
+    gamestate.cpp \
     guidesign.cpp \
     main.cpp \
     othelloboard.cpp \
     tilegui.cpp
 
 HEADERS += \
+    OthelloException.h \
     TileState.h \
     button.h \
     diskgui.h \
     game.h \
+    gameengine.h \
+    gamestate.h \
     guidesign.h \
     othelloboard.h \
     tilegui.h
