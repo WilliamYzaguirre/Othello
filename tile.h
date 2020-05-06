@@ -4,6 +4,7 @@
 #include <QGraphicsRectItem>
 #include <QBrush>
 #include <QGraphicsSceneMouseEvent>
+#include "TileState.h"
 
 class Tile : public QObject, public QGraphicsRectItem
 {
@@ -31,14 +32,18 @@ public:
     int rowLoc;
     int colLoc;
 
+    TileState getState();
+    void setState(TileState t);
+
 signals:
-    void tileClicked(); //std::pair<int, int> coor, std::pair<int, int> grid);
+    void tileClicked(int x, int y);
 
 private:
     QBrush brush;
     bool hasPiece;
     QString pieceColor;
     std::pair<int, int> pos;
+    TileState state;
 };
 
 #endif // TILE_H

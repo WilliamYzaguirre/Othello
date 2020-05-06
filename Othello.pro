@@ -16,14 +16,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    button.cpp \
+    game.cpp \
+    guidesign.cpp \
     main.cpp \
-    mainwindow.cpp
+    othelloboard.cpp \
+    othellopiece.cpp \
+    tile.cpp
 
 HEADERS += \
-    mainwindow.h
+    TileState.h \
+    button.h \
+    game.h \
+    guidesign.h \
+    othelloboard.h \
+    othellopiece.h \
+    tile.h
 
-FORMS += \
-    mainwindow.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

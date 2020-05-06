@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "othellopiece.h"
 
+
 //extern Game *game;
 Tile::Tile(QGraphicsItem *parent) : QGraphicsRectItem(parent)
 {
@@ -11,6 +12,7 @@ Tile::Tile(QGraphicsItem *parent) : QGraphicsRectItem(parent)
     setZValue(-1);
     setHasPiece(false);
     setPieceColor("None");
+    state = TileState::empty;
 }
 
 Tile::~Tile() {
@@ -19,7 +21,7 @@ Tile::~Tile() {
 
 void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event) {
-        emit tileClicked(); //std::make_pair(this->x(), this->y()), std::make_pair(colLoc, rowLoc));
+        emit tileClicked(colLoc, rowLoc);
     }
 }
 
@@ -46,6 +48,15 @@ QString Tile::getPieceColor() {
 
 void Tile::setPieceColor(QString value) {
     pieceColor = value;
+}
+
+TileState Tile::getState(){
+    return state;
+}
+
+void Tile::setState(TileState t)
+{
+    state = t;
 }
 
 /**

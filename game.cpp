@@ -10,8 +10,10 @@
 
 Game::Game(QWidget *parent) : QGraphicsView(parent)
 {
+    othello = new OthelloBoard(boardXY.first, boardXY.second);
     gameScene = new QGraphicsScene();
     gameScene->setSceneRect(0,0,1400,900);
+    boardXY = std::make_pair(width()/2-20, 50);
 
     setFixedSize(1400,900);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -28,6 +30,8 @@ Game::Game(QWidget *parent) : QGraphicsView(parent)
     turnDisplay->setDefaultTextColor(Qt::white);
     turnDisplay->setFont(QFont("",18));
     turnDisplay->setPlainText("Turn : WHITE");
+
+    turnNumber = 0;
 }
 
 void Game::drawBoard() {
@@ -39,7 +43,9 @@ void Game::drawBoard() {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             Tile* tile = new Tile();
-            this->board[i][j] = tile;
+            othello->setTile(tile, i, j);
+            othello->getTile(i,j)->setState(empty);
+            //this->board[i][j] = tile;
             tile->rowLoc = i;
             tile->colLoc = j;
             tile->setPos(x+shift*j, y+shift*i);
@@ -86,28 +92,32 @@ void Game::start() {
     int x = width()/2-400;
     int y = 50;
     OthelloPiece* piece = new OthelloPiece;
-    this->board[3][3]->setHasPiece(true);
+    othello->getTile(3,3)->setState(black);
+    //this->board[3][3]->setHasPiece(true);
     piece->setPos(x+shift*3, y+shift*3);
     piece->setColor(Qt::black);
     piece->setLocation(std::make_pair(3,3));
     this->addToScene(piece);
 
     OthelloPiece* piece1 = new OthelloPiece;
-    this->board[4][3]->setHasPiece(true);
+    othello->getTile(4,3)->setState(white);
+    //this->board[4][3]->setHasPiece(true);
     piece1->setPos(x+shift*4, y+shift*3);
     piece1->setColor(Qt::white);
     piece1->setLocation(std::make_pair(4,3));
     this->addToScene(piece1);
 
     OthelloPiece* piece2 = new OthelloPiece;
-    this->board[3][4]->setHasPiece(true);
+    othello->getTile(3,4)->setState(white);
+    //this->board[3][4]->setHasPiece(true);
     piece2->setPos(x+shift*3, y+shift*4);
     piece2->setColor(Qt::white);
     piece2->setLocation(std::make_pair(3,4));
     this->addToScene(piece2);
 
     OthelloPiece* piece3 = new OthelloPiece;
-    this->board[4][4]->setHasPiece(true);
+    othello->getTile(4,4)->setState(black);
+    //this->board[4][4]->setHasPiece(true);
     piece3->setPos(x+shift*4, y+shift*4);
     piece3->setColor(Qt::black);
     piece3->setLocation(std::make_pair(4,4));
@@ -115,11 +125,12 @@ void Game::start() {
 
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
-            //std::pair<int, int> coor = std::make_pair(x+shift*j, y+shift*i);
-            //std::pair<int, int> grid = std::make_pair(j, i);
-            connect(board[i][j],SIGNAL(tileClicked()) , this , SLOT(drawPiece()));
+            connect(othello->getTile(i,j),SIGNAL(tileClicked(int, int)) , this , SLOT(drawPiece(int, int)));
         }
     }
+
+    turnNumber = 1;
+    connect(this, SIGNAL(moveMade()), this, SLOT(updateGame()));
 }
 
 void Game::gameOver() {
@@ -166,15 +177,27 @@ void Game::displayMainMenu()
     drawBoard();
 }
 
-void Game::drawPiece() { //std::pair<int, int> coordinates, std::pair<int, int> gridLoc) {
-    qDebug("lit");
-    //OthelloPiece* piece = new OthelloPiece;
-    //this->board[gridLoc.first][gridLoc.second]->setHasPiece(true);
-    //piece->setPos(coordinates.first+100*gridLoc.first, coordinates.second+100*gridLoc.second);
-    //piece->setColor(Qt::black);
-    //piece->setLocation(gridLoc);
-    //this->addToScene(piece);
+void Game::drawPiece(int col, int row) {
+    OthelloPiece* piece = new OthelloPiece;
+    othello->getTile(col, row)->setState(black);
+    //this->board[col][row]->setHasPiece(true);
+    piece->setPos(boardXY.first+100*col, boardXY.second+100*row);
+    if (turnNumber % 2 == 0) {
+        piece->setColor(Qt::white);
+
+    }
+    else {
+        piece->setColor(Qt::black);
+    }
+    piece->setLocation(std::make_pair(col, row));
+    this->addToScene(piece);
+    emit moveMade();
 }
 
+void Game::updateGame() {
+    turnNumber++;
+}
+
+//std::vector<std::pair<int, int>> getPossibleMoves
 
 
