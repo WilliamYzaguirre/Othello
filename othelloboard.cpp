@@ -1,7 +1,7 @@
 #include "othelloboard.h"
-#include "tile.h"
+#include "tilegui.h"
 #include "game.h"
-#include "othellopiece.h"
+#include "diskgui.h"
 #include <utility>
 
 
@@ -15,7 +15,7 @@ OthelloBoard::~OthelloBoard()
 {
 
 }
-
+/**
 void OthelloBoard::setBlackMoves()
 {
     blackMoves.clear();
@@ -134,7 +134,7 @@ void OthelloBoard::setBlackMoves()
         }
     }
 }
-
+**/
 void OthelloBoard::setWhiteMoves()
 {
 
@@ -150,23 +150,23 @@ std::vector<std::pair<int, int> > OthelloBoard::getWhiteMoves()
 
 }
 
-void OthelloBoard::setTile(Tile* tile, int x, int y) {
-    board[x][y] = tile;
+void OthelloBoard::setTile(TileState state, int x, int y) {
+    board[x][y] = state;
 }
 
-Tile* OthelloBoard::getTile(int x, int y)
+TileState OthelloBoard::getTile(int x, int y)
 {
     return board[x][y];
 }
 
 void OthelloBoard::flipTile(int x, int y)
 {
-    if (board[x][y]->getState() != empty) {
-        if (board[x][y]->getState() == white) {
-            board[x][y]->setState(black);
+    if (board[x][y] != empty) {
+        if (board[x][y] == white) {
+            board[x][y] = black;
         }
         else {
-            board[x][y]->setState(white);
+            board[x][y] = white;
         }
     }
 }

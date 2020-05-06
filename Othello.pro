@@ -17,21 +17,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     button.cpp \
+    diskgui.cpp \
     game.cpp \
     guidesign.cpp \
     main.cpp \
     othelloboard.cpp \
-    othellopiece.cpp \
-    tile.cpp
+    tilegui.cpp
 
 HEADERS += \
     TileState.h \
     button.h \
+    diskgui.h \
     game.h \
     guidesign.h \
     othelloboard.h \
-    othellopiece.h \
-    tile.h
+    tilegui.h
 
 FORMS +=
 
