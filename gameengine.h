@@ -1,8 +1,9 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
-#include "guidesign.h"
-#include <QObject>
 #include "gamestate.h"
+#include "guidesign.h"
+#include <othelloboard.h>
+#include <QObject>
 
 
 class GameEngine : public QObject
@@ -10,6 +11,12 @@ class GameEngine : public QObject
     Q_OBJECT
 public:
     GameEngine();
+
+    void run();
+
+    void doWhiteTurn();
+
+    void doBlackTurn();
 
     const OthelloBoard& board() const noexcept;
 
@@ -27,16 +34,20 @@ public:
 
     void makeMove(int x, int y);
 
-    std::unique_ptr<GameState> clone() const;
+    //std::unique_ptr<GameState> clone() const;
 
     void connectGameEngine(GameEngine* ge);
+
+    std::vector<std::pair<int,int>> getValidMoves();
+
+    TileState getEndOfLine(int x, int y, int xFac, int yFac) const;
 
 public slots:
     void receiveTileClick(int, int);
 
 private:
     GuiDesign* gui;
-    GameState* gameState;
+    //GameState* gameState;
 
     int blackScore;
     int whiteScore;
@@ -45,8 +56,8 @@ private:
     OthelloBoard* gameBoard;
     bool blackTurn;
     bool whiteTurn;
-    std::vector<std::pair<int, int>> validBlackMoves;
-    std::vector<std::pair<int, int>> validWhiteMoves;
+    std::vector<std::pair<int, int>> validMoves;
+    //std::vector<std::pair<int, int>> validWhiteMoves;
 };
 
 #endif // GAMEENGINE_H

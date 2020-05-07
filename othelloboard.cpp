@@ -150,7 +150,7 @@ void OthelloBoard::setWhiteMoves()
 {
 
 }
-
+/**
 std::vector<std::pair<int, int> > OthelloBoard::getBlackMoves()
 {
 
@@ -160,7 +160,7 @@ std::vector<std::pair<int, int> > OthelloBoard::getWhiteMoves()
 {
 
 }
-
+**/
 //Sets tile at x,y to state (black, white, empty)
 void OthelloBoard::setTile(TileState state, int x, int y) {
     board[x][y] = state;

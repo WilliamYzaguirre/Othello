@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    boardgui.cpp \
     button.cpp \
     diskgui.cpp \
     game.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 HEADERS += \
     OthelloException.h \
     TileState.h \
+    boardgui.h \
     button.h \
     diskgui.h \
     game.h \

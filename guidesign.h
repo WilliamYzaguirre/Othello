@@ -27,7 +27,15 @@ public:
 
     void drawPiece(int x, int y, QColor color);
 
-    void connectTiles();
+    void connectAllTiles();
+
+    void connectTiles(std::vector<std::pair<int, int>> tiles);
+
+    void disconnectAllTiles();
+
+    void disconnectTile(std::vector<std::pair<int, int>> tiles);
+
+    void flipDisks(std::vector<std::pair<int,int>> disks);
 
 public slots:
     void recieveTileClick(int, int);

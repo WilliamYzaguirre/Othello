@@ -26,8 +26,6 @@ Game::Game()
 
     drawer = new GuiDesign();
     drawer->drawMainScene();
-
-    turnNumber = 0;
 }
 
 //Sets up main menu and begins app
@@ -46,43 +44,11 @@ void Game::displayBoard() {
     }
 }
 
-//return who's turn it is, black or white
-QString Game::getTurn() {
-    return turn;
-}
-
-//sets the current turn, black or white
-void Game::setTurn(QString value) {
-    turn = value;
-}
-
-//switches the current turn
-void Game::changeTurn()
-{
-    if(getTurn() == "WHITE")
-        setTurn("BLACK");
-    else
-        setTurn("WHITE");
-    turnDisplay->setPlainText("Turn : " + getTurn());
-}
-
 //Starts a game of Othello. First, removes the menu overlay, then calls
 //GUI Design to draw the starting pieces, then connects the tiles so
 //they have action when clicked, and sets the turn counter to one
 void Game::start() {
     drawer->removeMainMenu();
-
-    drawer->drawPiece(4,3, Qt::black);
-    drawer->drawPiece(3,4, Qt::black);
-    drawer->drawPiece(3,3, Qt::white);
-    drawer->drawPiece(4,4, Qt::white);
-
-    drawer->connectTiles();
-    connect(drawer, SIGNAL(sendTileClick(int, int)), this, SLOT(tileClickedReceive(int, int)));
-    //connect(this, SIGNAL(moveMade()), this, SLOT(updateGame()));
-
-    turnNumber = 1;
-
     gameEngine = new GameEngine();
 }
 
@@ -97,29 +63,3 @@ void Game::displayMainMenu()
     drawer->drawMainMenu();
     displayBoard();
 }
-
-void Game::displayPiece(int col, int row)
-{
-    if (turnNumber % 2 == 0) {
-        drawer->drawPiece(col, row, Qt::white);
-
-    }
-    else {
-        drawer->drawPiece(col, row, Qt::black);
-    }
-}
-
-//Gets a signal that a tile has been selected, if the tile clicked
-//is a valid move, GUI Design will be called to draw a disk
-void Game::tileClickedReceive(int col, int row) {
-    if (gameState->isValidMove(col, row)) {
-        displayPiece(col, row);
-        gameState->makeMove(col, row);
-    }
-    //emit moveMade(col, row);
-}
-
-void Game::updateGame() {
-    turnNumber++;
-}
-

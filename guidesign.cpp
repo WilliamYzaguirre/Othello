@@ -105,12 +105,41 @@ void GuiDesign::drawPiece(int x, int y, QColor color)
 }
 
 //Connects tiles to game.cpp so when they are clicked, the game can know
-void GuiDesign::connectTiles()
+void GuiDesign::connectAllTiles()
 {
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
             connect(tileList[x][y], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
         }
+    }
+}
+
+void GuiDesign::connectTiles(std::vector<std::pair<int, int> > tiles) {
+    for (std::pair<int, int> tile : tiles) {
+        connect(tileList[tile.first][tile.second], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
+    }
+}
+
+void GuiDesign::disconnectAllTiles()
+{
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            disconnect(tileList[x][y], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
+        }
+    }
+}
+
+void GuiDesign::disconnectTile(std::vector<std::pair<int, int> > tiles)
+{
+    for (std::pair<int, int> tile : tiles) {
+        disconnect(tileList[tile.first][tile.second], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
+    }
+}
+
+void GuiDesign::flipDisks(std::vector<std::pair<int, int> > disks)
+{
+    for (std::pair<int,int> disk : disks) {
+        diskList[disk.first][disk.second]->flipColor();
     }
 }
 

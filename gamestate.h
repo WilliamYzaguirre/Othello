@@ -1,3 +1,4 @@
+/**
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 #include "othelloboard.h"
@@ -44,3 +45,4 @@ private:
 };
 
 #endif // GAMESTATE_H
+**/

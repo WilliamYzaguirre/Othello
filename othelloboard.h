@@ -5,7 +5,7 @@
 #include <QObject>
 
 
-class OthelloBoard
+class OthelloBoard : public QObject
 {
     Q_OBJECT
 public:

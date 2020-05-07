@@ -1,3 +1,4 @@
+/**
 #include "gamestate.h"
 #include "OthelloException.h"
 #include "TileState.h"
@@ -5,7 +6,6 @@
 GameState::GameState()
 {
     gameBoard = new OthelloBoard();
-    validBlackMoves = {std::make_pair(2,3), std::make_pair(3,2), std::make_pair(4,5), std::make_pair(5,4)};
 }
 
 
@@ -390,7 +390,7 @@ std::unique_ptr<GameState> GameState::clone() const
 //    gameEngine = ge;
 //}
 
-/**
+
 
     for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
