@@ -4,6 +4,7 @@
 #include "guidesign.h"
 #include <othelloboard.h>
 #include <QObject>
+#include "boardgui.h"
 
 
 class GameEngine : public QObject
@@ -24,7 +25,7 @@ public:
 
     int getWhiteScore() const noexcept;
 
-    bool isGameOver() const noexcept;
+    void endGame() noexcept;
 
     bool isBlackTurn() const noexcept;
 
@@ -48,10 +49,14 @@ public slots:
 private:
     GuiDesign* gui;
     //GameState* gameState;
+    BoardGui* boardGui;
 
     int blackScore;
     int whiteScore;
     int turnCount;
+
+    bool gameOverTest;
+    bool gameOver;
 
     OthelloBoard* gameBoard;
     bool blackTurn;

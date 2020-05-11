@@ -18,38 +18,27 @@ GuiDesign::~GuiDesign()
 //Width=1400, height=900
 void GuiDesign::drawMainScene()
 {
-    gameScene = new QGraphicsScene();
-    gameScene->setSceneRect(0,0,1400,900);
+    mainScene = new QGraphicsScene();
+    mainScene->setSceneRect(0,0,1400,900);
 
     setFixedSize(1400,900);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setScene(gameScene);
+    setScene(mainScene);
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::black);
     setBackgroundBrush(brush);
 }
 
-
-//draws a tile for the board
-void GuiDesign::drawTile(int x, int y)
-{
-    TileGui* tile = new TileGui();
-    tile->setLocation(x, y);
-    tile->setRect((1400/2-400)+100*x, 50+100*y,100,100);
-    tileList[x][y] = tile;
-    this->addToScene(tile);
-}
-
 //adds object to main scene
 void GuiDesign::addToScene(QGraphicsItem *item) {
-    gameScene->addItem(item);
+    mainScene->addItem(item);
 }
 
 //removes object from main scene
 void GuiDesign::removeFromScene(QGraphicsItem *item) {
-    gameScene->removeItem(item);
+    mainScene->removeItem(item);
 }
 
 //draws the main menu. 2 buttons, start and quit. Start emits a signal
@@ -88,66 +77,10 @@ void GuiDesign::drawMainMenu()
 void GuiDesign::removeMainMenu()
 {
     for (QGraphicsItem* items : listG) {
-        gameScene->removeItem(items);
+        mainScene->removeItem(items);
     }
 }
 
-//int x: column of disk
-//int y: row of disk
-//QColor color: color of disk initially
-//Draws a disk to the given location
-void GuiDesign::drawPiece(int x, int y, QColor color)
-{
-    DiskGui* disk = new DiskGui();
-    disk->setRect((1400/2-400)+100*x, 50+100*y,100,100);
-    disk->setColor(color);
-    this->addToScene(disk);
-}
-
-//Connects tiles to game.cpp so when they are clicked, the game can know
-void GuiDesign::connectAllTiles()
-{
-    for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-            connect(tileList[x][y], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
-        }
-    }
-}
-
-void GuiDesign::connectTiles(std::vector<std::pair<int, int> > tiles) {
-    for (std::pair<int, int> tile : tiles) {
-        connect(tileList[tile.first][tile.second], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
-    }
-}
-
-void GuiDesign::disconnectAllTiles()
-{
-    for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-            disconnect(tileList[x][y], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
-        }
-    }
-}
-
-void GuiDesign::disconnectTile(std::vector<std::pair<int, int> > tiles)
-{
-    for (std::pair<int, int> tile : tiles) {
-        disconnect(tileList[tile.first][tile.second], SIGNAL(tileClicked(int, int)), this, SLOT(recieveTileClick(int, int)));
-    }
-}
-
-void GuiDesign::flipDisks(std::vector<std::pair<int, int> > disks)
-{
-    for (std::pair<int,int> disk : disks) {
-        diskList[disk.first][disk.second]->flipColor();
-    }
-}
-
-//Signals that a tile has been clicked at x,y
-void GuiDesign::recieveTileClick(int x, int y)
-{
-    emit sendTileClick(x, y);
-}
 
 //signals that the start button has been clicked
 void GuiDesign::sendStart() {

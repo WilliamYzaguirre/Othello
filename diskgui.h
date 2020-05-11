@@ -3,6 +3,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsItem>
 #include <QBrush>
+#include "TileState.h"
 
 class DiskGui : public QGraphicsRectItem
 {

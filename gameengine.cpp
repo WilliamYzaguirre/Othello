@@ -1,48 +1,84 @@
 #include "gameengine.h"
-
+#include <QtDebug>
+#include "othelloboard.h"
+#include <iostream>
+#include <string>
 GameEngine::GameEngine()
 {
-    gui = new GuiDesign();
+    //gui = new GuiDesign();
     //gameState = new GameState();
+    gameOverTest = false;
+    gameOver = false;
+    boardGui = new BoardGui();
+    boardGui->drawMainScene();
+    boardGui->show();
     this->run();
 }
 
 void GameEngine::run() {
-    connect(gui, SIGNAL(sendTileClick(int, int)), this, SLOT(receiveTileClick(int, int)));
+    boardGui->drawBoard();
+    boardGui->drawTurnIndicator();
+    boardGui->drawScores();
+
+    connect(boardGui, SIGNAL(sendTileClick(int, int)), this, SLOT(receiveTileClick(int, int)));
     //gameState->connectGameEngine(this);
+
+    gameBoard = new OthelloBoard();
+
 
     turnCount = 1;
 
-    gui->drawPiece(4,3, Qt::black);
+    boardGui->drawPiece(4,3, Qt::black);
     gameBoard->setTile(black, 4,3);
 
-    gui->drawPiece(3,4, Qt::black);
+    boardGui->drawPiece(3,4, Qt::black);
     gameBoard->setTile(black, 3,4);
 
-    gui->drawPiece(3,3, Qt::white);
+    boardGui->drawPiece(3,3, Qt::white);
     gameBoard->setTile(white, 3,3);
 
-    gui->drawPiece(4,4, Qt::white);
+    boardGui->drawPiece(4,4, Qt::white);
     gameBoard->setTile(white, 4,4);
-    while(!isGameOver()) {
-        if (isWhiteTurn()) {
-            doWhiteTurn();
+
+    doBlackTurn();
+}
+
+void GameEngine::doWhiteTurn()
+{
+    validMoves = getValidMoves();
+    if (validMoves.size() > 0) {
+        gameOverTest = false;
+        boardGui->connectTiles(validMoves);
+    }
+    else {
+        if (gameOverTest == true) {
+            gameOver = true;
+            endGame();
         }
         else {
+            gameOverTest = true;
             doBlackTurn();
         }
     }
 }
 
-void GameEngine::doWhiteTurn()
-{
-    std::vector<std::pair<int, int>> valid = getValidMoves();
-    gui->connectTiles(valid);
-}
-
 void GameEngine::doBlackTurn()
 {
-
+    validMoves = getValidMoves();
+    if (validMoves.size() > 0) {
+        gameOverTest = false;
+        boardGui->connectTiles(validMoves);
+    }
+    else {
+        if (gameOverTest == true) {
+            gameOver = true;
+            endGame();
+        }
+        else {
+            gameOverTest = true;
+            doWhiteTurn();
+        }
+    }
 }
 
 //const OthelloBoard& GameEngine::board() const noexcept
@@ -53,23 +89,38 @@ void GameEngine::doBlackTurn()
 
 int GameEngine::getBlackScore() const noexcept
 {
-    return blackScore;
+    int total = 0;
+    for (int x = 0; x < 8; ++x) {
+        for (int y = 0; y < 8; ++y) {
+            if (gameBoard->getTile(x,y) == black) {
+                total++;
+            }
+        }
+    }
+    return total;
 }
 
 int GameEngine::getWhiteScore() const noexcept
 {
-    return blackScore;
+    int total = 0;
+    for (int x = 0; x < 8; ++x) {
+        for (int y = 0; y < 8; ++y) {
+            if (gameBoard->getTile(x,y) == white) {
+                total++;
+            }
+        }
+    }
+    return total;
 }
 
-bool GameEngine::isGameOver() const noexcept
+void GameEngine::endGame() noexcept
 {
-    //if (validBlackMoves.size() == 0 && validWhiteMoves.size() == 0) {
-    //    return true;
-    //}
-    //else {
-    //    return false;
-    //}
-    return false;
+    if (getBlackScore() > getWhiteScore()) {
+        boardGui->drawEndGame(black);
+    }
+    else {
+        boardGui->drawEndGame(white);
+    }
 }
 
 bool GameEngine::isBlackTurn() const noexcept
@@ -98,56 +149,56 @@ bool GameEngine::isValidMove(int x, int y) const noexcept
         if (gameBoard->getTile(x,y) == empty) {
             //up left: x-1, y-1
             if (gameBoard->getTile(x-1,y-1) == black) {
-                if (getEndOfLine(x,y,-1,-1) == white) {
+                if (getEndOfLine(x-1,y-1,-1,-1) == white) {
                     return true;
                 }
             }
 
             //up: x, y-1
-            else if (gameBoard->getTile(x,y-1) == black) {
-                if (getEndOfLine(x,y,0,-1) == white) {
+            if (gameBoard->getTile(x,y-1) == black) {
+                if (getEndOfLine(x,y-1,0,-1) == white) {
                     return true;
                 }
             }
 
             //up right: x+1, y-1
-            else if (gameBoard->getTile(x+1,y-1) == black) {
-                if (getEndOfLine(x+1,y,1,-1) == white) {
+            if (gameBoard->getTile(x+1,y-1) == black) {
+                if (getEndOfLine(x+1,y-1,1,-1) == white) {
                     return true;
                 }
             }
 
             //left: x-1, y
-            else if (gameBoard->getTile(x-1,y) == black) {
-                if (getEndOfLine(x,y,-1,0) == white) {
+            if (gameBoard->getTile(x-1,y) == black) {
+                if (getEndOfLine(x-1,y,-1,0) == white) {
                     return true;
                 }
             }
 
             //right: x+1, y
-            else if (gameBoard->getTile(x+1,y) == black) {
-                if (getEndOfLine(x,y,1,0) == white) {
+            if (gameBoard->getTile(x+1,y) == black) {
+                if (getEndOfLine(x+1,y,1,0) == white) {
                     return true;
                 }
             }
 
             //down left: x-1, y+1
-            else if (gameBoard->getTile(x-1,y+1) == black) {
-                if (getEndOfLine(x,y,-1,+1) == white) {
+            if (gameBoard->getTile(x-1,y+1) == black) {
+                if (getEndOfLine(x-1,y+1,-1,+1) == white) {
                     return true;
                 }
             }
 
             //down: x, y+1
-            else if (gameBoard->getTile(x,y+1) == black) {
-                if (getEndOfLine(x,y,0,1) == white) {
+            if (gameBoard->getTile(x,y+1) == black) {
+                if (getEndOfLine(x,y+1,0,1) == white) {
                     return true;
                 }
             }
 
             //down right: x+1, y+1
-            else if (gameBoard->getTile(x+1,y+1) == black) {
-                if (getEndOfLine(x,y,1,1) == white) {
+            if (gameBoard->getTile(x+1,y+1) == black) {
+                if (getEndOfLine(x+1,y+1,1,1) == white) {
                     return true;
                 }
             }
@@ -161,56 +212,61 @@ bool GameEngine::isValidMove(int x, int y) const noexcept
         if (gameBoard->getTile(x,y) == empty) {
             //up left: x-1, y-1
             if (gameBoard->getTile(x-1,y-1) == white) {
-                if (getEndOfLine(x,y,-1,-1) == black) {
+                if (getEndOfLine(x-1,y-1,-1,-1) == black) {
                     return true;
                 }
             }
 
             //up: x, y-1
-            else if (gameBoard->getTile(x,y-1) == white) {
-                if (getEndOfLine(x,y,0,-1) == black) {
+            if (gameBoard->getTile(x,y-1) == white) {
+                if (getEndOfLine(x,y-1,0,-1) == black) {
+                    qDebug("up");
                     return true;
                 }
             }
 
             //up right: x+1, y-1
-            else if (gameBoard->getTile(x+1,y-1) == white) {
-                if (getEndOfLine(x+1,y,1,-1) == black) {
+            if (gameBoard->getTile(x+1,y-1) == white) {
+                if (getEndOfLine(x+1,y-1,1,-1) == black) {
                     return true;
                 }
             }
 
             //left: x-1, y
-            else if (gameBoard->getTile(x-1,y) == white) {
-                if (getEndOfLine(x,y,-1,0) == black) {
+            if (gameBoard->getTile(x-1,y) == white) {
+                if (getEndOfLine(x-1,y,-1,0) == black) {
+                    qDebug("left");
                     return true;
                 }
             }
 
             //right: x+1, y
-            else if (gameBoard->getTile(x+1,y) == white) {
-                if (getEndOfLine(x,y,1,0) == black) {
+            if (gameBoard->getTile(x+1,y) == white) {
+                if (getEndOfLine(x+1,y,1,0) == black) {
+                    qDebug("right");
                     return true;
                 }
             }
 
             //down left: x-1, y+1
-            else if (gameBoard->getTile(x-1,y+1) == white) {
-                if (getEndOfLine(x,y,-1,+1) == black) {
+            if (gameBoard->getTile(x-1,y+1) == white) {
+                if (getEndOfLine(x-1,y+1,-1,+1) == black) {
                     return true;
                 }
             }
 
             //down: x, y+1
-            else if (gameBoard->getTile(x,y+1) == white) {
-                if (getEndOfLine(x,y,0,1) == black) {
+            if (gameBoard->getTile(x,y+1) == white) {
+                qDebug("down start");
+                if (getEndOfLine(x,y+1,0,1) == black) {
+                    qDebug("down");
                     return true;
                 }
             }
 
             //down right: x+1, y+1
-            else if (gameBoard->getTile(x+1,y+1) == white) {
-                if (getEndOfLine(x,y,1,1) == black) {
+            if (gameBoard->getTile(x+1,y+1) == white) {
+                if (getEndOfLine(x+1,y+1,1,1) == black) {
                     return true;
                 }
             }
@@ -236,10 +292,12 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                    i++;
+                    j++;
                     while(i > x && j > y) {
                         gameBoard->flipTile(i,j);
-                        i--;
-                        j--;
+                        i++;
+                        j++;
                     }
                 }
             }
@@ -253,6 +311,8 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                    i++;
+                    j++;
                     while(i < x && j < y) {
                         gameBoard->flipTile(i,j);
                         i++;
@@ -269,6 +329,7 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                    j++;
                     while(j < y) {
                         gameBoard->flipTile(i,j);
                         j++;
@@ -285,6 +346,8 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                    i--;
+                    j++;
                     while(i > x && j < y) {
                         gameBoard->flipTile(i,j);
                         i--;
@@ -301,6 +364,7 @@ void GameEngine::makeMove(int x, int y)
                     i -= 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                    i++;
                     while(i < x) {
                         gameBoard->flipTile(i,j);
                         i++;
@@ -316,6 +380,7 @@ void GameEngine::makeMove(int x, int y)
                     i += 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                    i--;
                     while(i > x) {
                         gameBoard->flipTile(i,j);
                         i--;
@@ -332,6 +397,8 @@ void GameEngine::makeMove(int x, int y)
                     j += 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                        i++;
+                        j--;
                     while(i < x && j > y) {
                         gameBoard->flipTile(i,j);
                         i++;
@@ -348,6 +415,7 @@ void GameEngine::makeMove(int x, int y)
                     j += 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                        j--;
                     while(j > y) {
                         gameBoard->flipTile(i,j);
                         j--;
@@ -364,6 +432,8 @@ void GameEngine::makeMove(int x, int y)
                     j += 1;
                 }
                 if (gameBoard->getTile(i,j) == white) {
+                        i--;
+                        j--;
                     while(i > x && j > y) {
                         gameBoard->flipTile(i,j);
                         i--;
@@ -375,6 +445,7 @@ void GameEngine::makeMove(int x, int y)
         }
         else {
             gameBoard->setTile(black, x, y);
+            qDebug("butt");
 
             //upper left: col-1, row-1
             if (gameBoard->getTile(x-1,y-1) == white) {
@@ -385,23 +456,8 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
-                    while(i > x && j > y) {
-                        gameBoard->flipTile(i,j);
-                        i--;
-                        j--;
-                    }
-                }
-            }
-
-            //upper left: col-1, row-1
-            if (gameBoard->getTile(x-1,y-1) == white) {
-                int i = x-1;
-                int j = y-1;
-                while (gameBoard->getTile(i,j) == white && gameBoard->isValidTile(i,j)) {
-                    i -= 1;
-                    j -= 1;
-                }
-                if (gameBoard->getTile(i,j) == black) {
+                    i++;
+                    j++;
                     while(i < x && j < y) {
                         gameBoard->flipTile(i,j);
                         i++;
@@ -418,6 +474,7 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    j++;
                     while(j < y) {
                         gameBoard->flipTile(i,j);
                         j++;
@@ -434,6 +491,8 @@ void GameEngine::makeMove(int x, int y)
                     j -= 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    i--;
+                    j++;
                     while(i > x && j < y) {
                         gameBoard->flipTile(i,j);
                         i--;
@@ -450,6 +509,7 @@ void GameEngine::makeMove(int x, int y)
                     i -= 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    i++;
                     while(i < x) {
                         gameBoard->flipTile(i,j);
                         i++;
@@ -459,12 +519,14 @@ void GameEngine::makeMove(int x, int y)
 
             //right: col+1, row
             if (gameBoard->getTile(x+1,y) == white) {
+                qDebug("rightttt");
                 int i = x+1;
                 int j = y;
                 while (gameBoard->getTile(i,j) == white && gameBoard->isValidTile(i,j)) {
                     i += 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    i--;
                     while(i > x) {
                         gameBoard->flipTile(i,j);
                         i--;
@@ -481,6 +543,8 @@ void GameEngine::makeMove(int x, int y)
                     j += 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    i++;
+                    j--;
                     while(i < x && j > y) {
                         gameBoard->flipTile(i,j);
                         i++;
@@ -497,6 +561,7 @@ void GameEngine::makeMove(int x, int y)
                     j += 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    j--;
                     while(j > y) {
                         gameBoard->flipTile(i,j);
                         j--;
@@ -513,6 +578,8 @@ void GameEngine::makeMove(int x, int y)
                     j += 1;
                 }
                 if (gameBoard->getTile(i,j) == black) {
+                    i--;
+                    j++;
                     while(i > x && j > y) {
                         gameBoard->flipTile(i,j);
                         i--;
@@ -535,6 +602,7 @@ std::vector<std::pair<int, int> > GameEngine::getValidMoves()
     for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
             if (isValidMove(x,y)) {
+                qDebug("lol");
                 validMoves.push_back(std::make_pair(x,y));
             }
         }
@@ -561,8 +629,21 @@ TileState GameEngine::getEndOfLine(int x, int y, int xFac, int yFac) const
 }
 
 
-void GameEngine::receiveTileClick(int, int) {
-
+void GameEngine::receiveTileClick(int x, int y) {
+    boardGui->disconnectTile(validMoves);
+    makeMove(x,y);
+    turnCount++;
+    boardGui->reDrawPieces(gameBoard);
+    boardGui->updateBlackScore(getBlackScore());
+    boardGui->updateWhiteScore(getWhiteScore());
+    if (isBlackTurn()) {
+        boardGui->switchTurnBlack();
+        doBlackTurn();
+    }
+    else {
+        boardGui->switchTurnWhite();
+        doWhiteTurn();
+    }
 }
 
 

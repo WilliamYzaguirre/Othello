@@ -15,15 +15,6 @@
 Game::Game()
 {  
 
-    /**
-    turnDisplay = new QGraphicsTextItem();
-    turnDisplay->setPos(width()/2-100, 10);
-    turnDisplay->setZValue(1);
-    turnDisplay->setDefaultTextColor(Qt::white);
-    turnDisplay->setFont(QFont("",18));
-    turnDisplay->setPlainText("Turn : WHITE");
-    **/
-
     drawer = new GuiDesign();
     drawer->drawMainScene();
 }
@@ -35,20 +26,11 @@ void Game::begin() {
     connect(drawer, SIGNAL(startSignal()), this, SLOT(start()));
 }
 
-//Calls GUI Design to draw all the tiles for the board
-void Game::displayBoard() {
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            drawer->drawTile(i , j);
-        }
-    }
-}
-
 //Starts a game of Othello. First, removes the menu overlay, then calls
 //GUI Design to draw the starting pieces, then connects the tiles so
 //they have action when clicked, and sets the turn counter to one
 void Game::start() {
-    drawer->removeMainMenu();
+    //drawer->removeMainMenu();
     gameEngine = new GameEngine();
 }
 
@@ -61,5 +43,5 @@ void Game::gameOver() {
 void Game::displayMainMenu()
 {
     drawer->drawMainMenu();
-    displayBoard();
+    //displayBoard();
 }

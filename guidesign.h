@@ -5,6 +5,7 @@
 #include <QObject>
 #include <diskgui.h>
 #include <tilegui.h>
+#include "othelloboard.h"
 
 
 class GuiDesign : public QGraphicsView
@@ -13,6 +14,8 @@ class GuiDesign : public QGraphicsView
 public:
     GuiDesign(QWidget *parent = 0);
     ~GuiDesign();
+
+    //GuiDesign& operator=(GuiDesign g);
 
     void drawMainScene();
 
@@ -37,16 +40,16 @@ public:
 
     void flipDisks(std::vector<std::pair<int,int>> disks);
 
+    void reDrawPieces(OthelloBoard* board);
+
 public slots:
-    void recieveTileClick(int, int);
     void sendStart();
 
 signals:
-    void sendTileClick(int, int);
     void startSignal();
 
 private:
-    QGraphicsScene* gameScene;
+    QGraphicsScene* mainScene;
     QList<QGraphicsItem*> listG;
 
     DiskGui* diskList[8][8];

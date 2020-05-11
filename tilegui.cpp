@@ -33,3 +33,27 @@ void TileGui::setLocation(int x, int y)
     colLoc = x;
     rowLoc = y;
 }
+
+void TileGui::setState(TileState state)
+{
+    this->state = state;
+}
+
+TileState TileGui::getState()
+{
+    return this->state;
+}
+/**
+void TileGui::flipTile()
+{
+    if (this->state != empty) {
+        this->disk->flipColor();
+    }
+}
+
+void TileGui::setDisk(DiskGui* disk)
+{
+    this->disk = disk;
+}
+**/
+

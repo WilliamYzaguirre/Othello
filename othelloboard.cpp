@@ -11,11 +11,15 @@ OthelloBoard::OthelloBoard()
         for (int y = 0; y < 8; ++y) {
             if ((x == 3 && y == 4) || (x == 4 && y == 3)) {
                 board[x][y] = black;
+                //qDebug("bl");
             }
             else if ((x == 3 && y == 3) || (x == 4 && y == 4)) {
                 board[x][y] = white;
+                //qDebug("wh");
+
             }
             else {
+                //qDebug("em");
                 board[x][y] = empty;
             }
         }

@@ -28,7 +28,6 @@ public slots:
 
 private:
     GameEngine* gameEngine;
-    QGraphicsTextItem *turnDisplay;
     GuiDesign* drawer;
 };
 
